@@ -1,7 +1,7 @@
 import math
 from typing import List
 from typing import List
-
+import numpy as np
 import future as future
 
 
@@ -41,7 +41,7 @@ def zmedian(list: List[float]) -> float:
                 list[i] = list[j]
                 list[j] = temp
     print(f'Asending list :{list}')
-    mid = floor(total / 2)
+    mid = (total // 2)
     if total % 2 != 0:
         print(f'Mid Element at index {mid}')
         print(f'Mid value when list size is odd {list[mid]}')
@@ -70,7 +70,7 @@ def zstderr(list: List[float]) -> float:
 
 
 
-def zcorr(listx: List[float], listy: List[float]) -> float:
+def zcorr1(listx: List[float], listy: List[float]) -> float:
     sum = 0
 
     sub_x = [i - zmean(listx) for i in listx]
@@ -78,10 +78,12 @@ def zcorr(listx: List[float], listy: List[float]) -> float:
     lengthx = zcount(listx)
     lengthy = zcount(listy)
 
-    num_list = [sub_x[i] * sub_y[i] for i in range(lengthx)]
+    num_list = [sub_x[i] * sub_y[i] for i in range(lengthx)] # multiple x*y
+    #print(num_list)
     num = 0
     for i in num_list:
-        num = num + i
+        #print(i)
+        num = num + i  # sum of multiplid list
     den = lengthx - 1
     cov = num / den
 
@@ -90,6 +92,19 @@ def zcorr(listx: List[float], listy: List[float]) -> float:
 
     else:
         return cov
+
+    def zcorr(listx: List[float], listy: List[float]) -> float:
+        # sum(xy) ,sum(x), sum(y)
+        x_multiply_y = np.multiply(listx, listy)  # multiplied list
+        sum_xy = sum(x_multiply_y)
+        print(f'sum of xy {sum_xy}')
+        sum_x = sum(listx)
+        sum_y = sum(listy)
+        lengthx = zcount(listx)
+        lengthy = zcount(listy)
+        if lengthx == lengthy:
+            co_relation = ((lengthx * sum_xy) - sum_x * sum_y) / (zstddev(listx) * zstddev(listy))
+        return co_relation
 
 
 def read_data_file(file_name):
@@ -110,13 +125,15 @@ def read_data_sets(files):  # more than one file
 
 
 if __name__=='__main__':
-    list=[10,13,3,6,1]
-    list1=[10,13,3,6,1]
-    print(zcount(list))
+    list1=[43,21,25,42,57,59]
+    list2=[99,65,79,75,87,81]
+    print(zcount(list1))
    # print(zmode(list))
    # print(zmedian(list1))
-    list = [1, 2, 3, 4, 5]
-    print(zvariance(list))
-    print(zstddev(list))
-    print( zstderr(list))
-    print(zcorr(list, list1))
+    #list = [1, 2, 3, 4, 5]
+    print(zvariance(list1))
+    print(f'list 1 std devi  {zstddev(list1)}')
+    print(f'list 2 std devi  {zstddev(list2)}')
+    print( zstderr(list1))
+    print(zcorr1(list1, list2))
+    print(f'Formula for corelation{zcorr(list1, list2)}')
